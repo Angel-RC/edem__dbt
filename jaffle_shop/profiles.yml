@@ -1,0 +1,14 @@
+jaffle_shop:
+  outputs:
+    dev:
+      type: duckdb
+      path: 'bbdd/jaffle_shop.duckdb'
+      threads: 4
+    prod:
+      type: duckdb
+      path: "md:my_db?motherduck_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFuZ2VsLnIuY2hpY290ZUBnbWFpbC5jb20iLCJzZXNzaW9uIjoiYW5nZWwuci5jaGljb3RlLmdtYWlsLmNvbSIsInBhdCI6IlIwNXR6OXRWeERac0VfdWhENjhia0Nva0NKb2pVUGt0dDJKdTJKOHhzYVUiLCJ1c2VySWQiOiI0YzMxYjI3Ni1mMmJkLTQ0MjAtYTA3MC1mMTA3NjNhMWNmZTQiLCJpc3MiOiJtZF9wYXQiLCJyZWFkT25seSI6ZmFsc2UsInRva2VuVHlwZSI6InJlYWRfd3JpdGUiLCJpYXQiOjE3NTg0NzEwNDQsImV4cCI6MTc2MzY1NTA0NH0.2ybl5eeK13UZzL5tmrcMsfRZPEqEQi3-bYPe06HkUCw"
+      threads: 4
+  target: dev
+
+
+  

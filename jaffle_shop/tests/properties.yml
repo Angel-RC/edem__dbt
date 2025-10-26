@@ -1,0 +1,13 @@
+tests:
+  - name: assert_customer_financial_calculation
+    config:
+      severity: error
+      
+  - name: assert_customer_lifetime_metrics_consistency
+    config:
+      severity: error
+      
+  - name: assert_no_negative_customer_metrics
+    config:
+      severity: warn
+      tags: ["data_quality"]

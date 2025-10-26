@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    tables:
+      - name: orders
+      - name: customers
+      - name: items
+      - name: products
+      - name: stores
+      - name: supplies
