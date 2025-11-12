@@ -8,8 +8,13 @@ orders as (
 
     select * from {{ ref('staging__orders') }}
 
-)
+),
 
+products as (
+
+    select * from {{ ref('staging__products') }}
+
+)
 
 
 
@@ -19,6 +24,7 @@ select
     orders.customer_id,
     order_lineitems.order_id,
     order_lineitems.product_id,
+    products.product_type,
     sum(case when type_of_movement = 'VENTA' then order_lineitems.quantity else 0 end)       as original_quantity,
     sum(order_lineitems.quantity)                                                            as final_quantity,
     avg(order_lineitems.unit_price)                                                          as unit_price,
@@ -30,9 +36,13 @@ from
 inner join 
     orders  
 on order_lineitems.order_id = orders.order_id
+inner join 
+    products
+on order_lineitems.product_id = products.product_id
 group by 
     orders.order_date,
     orders.location_id,
     orders.customer_id,
     order_lineitems.order_id,
-    order_lineitems.product_id
+    order_lineitems.product_id,
+    products.product_type

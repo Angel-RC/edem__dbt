@@ -34,4 +34,3 @@ group by
     orders.location_id,
     orders.customer_id,
     order_lineitems.order_id,
-    order_lineitems.product_id

@@ -6,11 +6,6 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "dbt>=1.0.0.40.6",
-    "dbt-duckdb>=1.9.6",
+    "dbt-duckdb>=1.9.6"
 ]
 
-[dependency-groups]
-dev = [
-    "ruff>=0.13.0",
-    "sqruff>=0.29.3",
-]
