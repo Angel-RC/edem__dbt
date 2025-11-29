@@ -4,6 +4,10 @@ jaffle_shop:
       type: duckdb
       path: 'bbdd/jaffle_shop.duckdb'
       threads: 4
+    pro:
+      type: duckdb 
+      path: 'bbdd/jaffle_shop_pro.duckdb'
+      threads: 4
   target: dev
 
 

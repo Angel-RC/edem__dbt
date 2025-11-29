@@ -6,4 +6,3 @@ select
 from {{ ref('marts__customers') }}
 where
     lifetime_value < 0
-    

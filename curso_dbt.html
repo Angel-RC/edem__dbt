@@ -2667,7 +2667,7 @@ vertical-align: -.125em;
 <div class="sourceCode" id="cb26"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Modelo tradicional (materialized=&#39;table&#39;)</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>{{ config(<span class="kw">materialized</span><span class="op">=</span><span class="st">&#39;table&#39;</span>) }}</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> {{ <span class="kw">source</span>(<span class="st">&#39;raw&#39;</span>, <span class="st">&#39;events&#39;</span>) }}</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> {{ <span class="kw">source</span>(<span class="st">&#39;raw&#39;</span>, <span class="st">&#39;orders&#39;</span>) }}</span>
 <span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co">-- Problema: Si hay 100M de filas, se reconstruyen TODAS cada vez</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><strong>En cada ejecución:</strong></p>
 <ul>
@@ -2734,10 +2734,10 @@ vertical-align: -.125em;
 <div class="sourceCode" id="cb29"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>{{</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    config(</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>        <span class="kw">materialized</span><span class="op">=</span><span class="st">&#39;incremental&#39;</span>,</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>        unique_key<span class="op">=</span><span class="st">&#39;event_id&#39;</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>        unique_key<span class="op">=</span><span class="st">&#39;order_id&#39;</span></span>
 <span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>}}</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Si llega un registro con <code>event_id</code> existente:</p>
+<p>Si llega un registro con <code>order_id</code> existente:</p>
 <ul>
 <li><strong>Con <code>unique_key</code>:</strong> Actualiza el registro</li>
 <li><strong>Sin <code>unique_key</code>:</strong> Inserta duplicado</li>
@@ -2771,7 +2771,7 @@ vertical-align: -.125em;
 </section>
 <section id="ejemplo-con-actualizaciones-tabla-de-pedidos" class="level3" data-number="8.4">
 <h3 data-number="8.4" class="anchored" data-anchor-id="ejemplo-con-actualizaciones-tabla-de-pedidos"><span class="header-section-number">8.4</span> Ejemplo con Actualizaciones: Tabla de Pedidos</h3>
-<div class="sourceCode" id="cb32"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- models/marts/marts__orders.sql</span></span>
+<div class="sourceCode" id="cb32"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- models/intermediate/intermediate__orders_incremental.sql</span></span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>{{</span>
 <span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    config(</span>
@@ -2796,7 +2796,7 @@ vertical-align: -.125em;
 <h3 data-number="8.5" class="anchored" data-anchor-id="forzar-reconstrucción-completa"><span class="header-section-number">8.5</span> Forzar Reconstrucción Completa</h3>
 <p>A veces necesitas reconstruir desde cero:</p>
 <div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Forzar full-refresh (ignora incremental)</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="ex">dbt</span> run <span class="at">--full-refresh</span> <span class="at">--select</span> marts__user_events</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="ex">dbt</span> run <span class="at">--full-refresh</span> <span class="at">--select</span> intermediate__orders_incremental</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Esto ejecuta el modelo como si fuera la primera vez (sin <code>WHERE</code>).</p>
 <hr>
 </section>
@@ -3068,7 +3068,7 @@ vertical-align: -.125em;
 <div class="sourceCode" id="cb50"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>{# macros<span class="op">/</span>my_macro.sql #}</span>
 <span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>{% macro nombre_macro(parametro1, parametro2) %}</span>
 <span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- Código SQL aquí</span></span>
-<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">select</span> {{ parametro1 }}, {{ parametro2 }}</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">select</span> <span class="dv">1</span> <span class="kw">as</span> {{ parametro1 }}, <span class="dv">2</span> <span class="kw">as</span> {{ parametro2 }}</span>
 <span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>{% endmacro %}</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <section id="uso-de-la-macro" class="level4">
 <h4 class="anchored" data-anchor-id="uso-de-la-macro">Uso de la Macro</h4>
@@ -3188,7 +3188,7 @@ vertical-align: -.125em;
 </section>
 <section id="qué-son-los-paquetes" class="level2" data-number="11">
 <h2 data-number="11" class="anchored" data-anchor-id="qué-son-los-paquetes"><span class="header-section-number">11</span> ¿Qué son los Paquetes?</h2>
-<p>Los <strong>paquetes</strong> son colecciones de macros, modelos y tests desarrollados por la comunidad o por dbt Labs que puedes instalar y reutilizar en tu proyecto.</p>
+<p>Los <strong>paquetes</strong> son colecciones de macros, modelos y tests desarrollados por la comunidad o por dbt Labs que puedes instalar y reutilizar en tu proyecto. Se pueden buscar libremente en el <a href="https://hub.getdbt.com/">dbt Hub</a>.</p>
 <p><strong>Beneficios:</strong></p>
 <ul>
 <li>✅ Evitar reinventar la rueda</li>
@@ -3231,7 +3231,13 @@ vertical-align: -.125em;
 <h2 data-number="12" class="anchored" data-anchor-id="documentación-en-dbt"><span class="header-section-number">12</span> Documentación en dbt</h2>
 <section id="por-qué-es-importante-la-documentación" class="level3" data-number="12.1">
 <h3 data-number="12.1" class="anchored" data-anchor-id="por-qué-es-importante-la-documentación"><span class="header-section-number">12.1</span> ¿Por qué es Importante la Documentación?</h3>
-<p>Antes de dbt, la documentación de datos era: - ❌ Manual y propensa a quedar desactualizada - ❌ Dispersa en wikis, Google Docs o Confluence - ❌ Difícil de mantener sincronizada con el código - ❌ Poco accesible para analistas de negocio</p>
+<p>Antes de dbt, la documentación de datos era:</p>
+<ul>
+<li>❌ Manual y propensa a quedar desactualizada</li>
+<li>❌ Dispersa en wikis, Google Docs o Confluence</li>
+<li>❌ Difícil de mantener sincronizada con el código</li>
+<li>❌ Poco accesible para analistas de negocio</li>
+</ul>
 <p><strong>dbt revoluciona la documentación al:</strong></p>
 <ul>
 <li>✅ Generarla automáticamente desde el código</li>
@@ -3322,10 +3328,20 @@ vertical-align: -.125em;
 <span id="cb76-21"><a href="#cb76-21" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">tests</span><span class="kw">:</span></span>
 <span id="cb76-22"><a href="#cb76-22" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> unique</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 </ol>
-<p><strong>Ventajas de la Generación Automática</strong></p>
-<p>✅ <strong>Ahorro de tiempo</strong>: No escribir manualmente cada columna ✅ <strong>Cero errores de tipeo</strong>: Los nombres se extraen directamente del warehouse ✅ <strong>Completitud</strong>: No olvidarás documentar ninguna columna ✅ <strong>Punto de partida</strong>: Estructura base lista para agregar descripciones ✅ <strong>Escalabilidad</strong>: Puedes generar YAML para decenas de modelos rápidamente</p>
-<p><strong>Limitaciones</strong></p>
-<p>⚠️ <strong>No genera descripciones</strong>: Las descripciones quedan vacías, debes completarlas manualmente ⚠️ <strong>No añade tests</strong>: Debes agregar los tests según tus necesidades ⚠️ <strong>Sobrescribe</strong>: Ten cuidado de no sobrescribir YAML existente con documentación</p>
+<p><strong>Ventajas de la Generación Automática</strong>:</p>
+<ul>
+<li><strong>Ahorro de tiempo</strong>: No escribir manualmente cada columna</li>
+<li><strong>Cero errores de tipeo</strong>: Los nombres se extraen directamente del warehouse</li>
+<li><strong>Completitud</strong>: No olvidarás documentar ninguna columna</li>
+<li><strong>Punto de partida</strong>: Estructura base lista para agregar descripciones</li>
+<li><strong>Escalabilidad</strong>: Puedes generar YAML para decenas de modelos rápidamente</li>
+</ul>
+<p><strong>Limitaciones</strong>:</p>
+<ul>
+<li><strong>No genera descripciones</strong>: Las descripciones quedan vacías, debes completarlas manualmente</li>
+<li><strong>No añade tests</strong>: Debes agregar los tests según tus necesidades</li>
+<li><strong>Sobrescribe</strong>: Ten cuidado de no sobrescribir YAML existente con documentación</li>
+</ul>
 <hr>
 </section>
 </section>
@@ -3359,6 +3375,7 @@ vertical-align: -.125em;
 <li>Incluye búsqueda y filtrado avanzado</li>
 </ul>
 <p><strong>Para detenerlo:</strong> Presiona <code>Ctrl+C</code> en la terminal</p>
+<p><strong>Nota</strong>: Se puede generar la documentación de forma estatica de modo que el resultado sea un fichero HTML ejecutando <code>dbt docs generate --static</code>, lo que generara el fichero <code>target/static_index.html</code>.</p>
 <hr>
 </section>
 </section>
@@ -3466,7 +3483,14 @@ vertical-align: -.125em;
 </section>
 <section id="vista-de-modelo-individual" class="level4">
 <h4 class="anchored" data-anchor-id="vista-de-modelo-individual">2. <strong>Vista de Modelo Individual</strong></h4>
-<p>Cada modelo muestra: - Descripción detallada - Lista de columnas con tipos y descripciones - Tests configurados - Código SQL compilado - Linaje de datos (dependencies upstream y downstream)</p>
+<p>Cada modelo muestra:</p>
+<ul>
+<li>Descripción detallada</li>
+<li>Lista de columnas con tipos y descripciones</li>
+<li>Tests configurados</li>
+<li>Código SQL compilado</li>
+<li>Linaje de datos (dependencies upstream y downstream)</li>
+</ul>
 </section>
 <section id="gráfico-de-linaje-dag" class="level4">
 <h4 class="anchored" data-anchor-id="gráfico-de-linaje-dag">3. <strong>Gráfico de Linaje (DAG)</strong></h4>
@@ -3632,7 +3656,10 @@ vertical-align: -.125em;
 <span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a><span class="ex">dbt</span> test</span>
 <span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb92-4"><a href="#cb92-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Tests de un modelo específico</span></span>
-<span id="cb92-5"><a href="#cb92-5" aria-hidden="true" tabindex="-1"></a><span class="ex">dbt</span> test <span class="at">--select</span> marts__customers</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb92-5"><a href="#cb92-5" aria-hidden="true" tabindex="-1"></a><span class="ex">dbt</span> test <span class="at">--select</span> marts__customers</span>
+<span id="cb92-6"><a href="#cb92-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-7"><a href="#cb92-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Test almacenando los registros que fallan</span></span>
+<span id="cb92-8"><a href="#cb92-8" aria-hidden="true" tabindex="-1"></a><span class="ex">dbt</span> test <span class="at">--store-failures</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </section>
 

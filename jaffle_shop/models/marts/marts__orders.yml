@@ -1,0 +1,68 @@
+
+models:
+  - name: marts__orders
+    description: ""
+    columns:
+      - name: order_date
+        data_type: date
+        description: "esta es una columna super util"
+
+      - name: location_id
+        data_type: varchar
+        description: ""
+
+      - name: location_name
+        data_type: varchar
+        description: ""
+
+      - name: customer_id
+        data_type: varchar
+        description: ""
+
+      - name: customer_name
+        data_type: varchar
+        description: ""
+
+      - name: order_id
+        data_type: varchar
+        description: ""
+
+      - name: number_of_products
+        data_type: bigint
+        description: ""
+
+      - name: has_food_products
+        data_type: boolean
+        description: ""
+
+      - name: has_drink_products
+        data_type: boolean
+        description: ""
+
+      - name: original_quantity
+        data_type: hugeint
+        description: ""
+
+      - name: final_quantity
+        data_type: hugeint
+        description: ""
+
+      - name: original_subtotal_price
+        data_type: double
+        description: ""
+
+      - name: final_subtotal_price
+        data_type: double
+        description: ""
+
+      - name: original_total_price
+        data_type: double
+        description: ""
+
+      - name: final_total_price
+        data_type: double
+        description: ""
+
+      - name: has_returned_items
+        data_type: boolean
+        description: ""
